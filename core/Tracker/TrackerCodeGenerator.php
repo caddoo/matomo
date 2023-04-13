@@ -24,11 +24,10 @@ class TrackerCodeGenerator
 {
     /**
      * whether matomo.js|php should be forced over piwik.js|php
-     * @var bool
      */
-    private $shouldForceMatomoEndpoint = false;
+    private bool $shouldForceMatomoEndpoint = false;
 
-    public function forceMatomoEndpoint()
+    public function forceMatomoEndpoint(): void
     {
         $this->shouldForceMatomoEndpoint = true;
     }
@@ -67,7 +66,7 @@ class TrackerCodeGenerator
         $crossDomain = false,
         $excludedQueryParams = false,
         $excludedReferrers = []
-    ) {
+    ): string {
         if (substr($piwikUrl, 0, 4) !== 'http') {
             $piwikUrl = 'http://' . $piwikUrl;
         }
@@ -230,7 +229,7 @@ class TrackerCodeGenerator
         return $jsCode;
     }
 
-    public function getJsTrackerEndpoint()
+    public function getJsTrackerEndpoint(): string
     {
         $name = 'matomo.js';
         if ($this->shouldPreferPiwikEndpoint()) {
@@ -239,7 +238,7 @@ class TrackerCodeGenerator
         return $name;
     }
 
-    public function getPhpTrackerEndpoint()
+    public function getPhpTrackerEndpoint(): string
     {
         $name = 'matomo.php';
         if ($this->shouldPreferPiwikEndpoint()) {
@@ -248,7 +247,7 @@ class TrackerCodeGenerator
         return $name;
     }
 
-    public function shouldPreferPiwikEndpoint()
+    public function shouldPreferPiwikEndpoint(): string
     {
         if ($this->shouldForceMatomoEndpoint) {
             return false;
@@ -258,7 +257,7 @@ class TrackerCodeGenerator
         return DbHelper::wasMatomoInstalledBeforeVersion('3.7.0-b1');
     }
 
-    private function getJavascriptTagOptions($idSite, $mergeSubdomains, $mergeAliasUrls)
+    private function getJavascriptTagOptions($idSite, $mergeSubdomains, $mergeAliasUrls): string
     {
         try {
             $websiteUrls = APISitesManager::getInstance()->getSiteUrlsFromId($idSite);
@@ -316,7 +315,7 @@ class TrackerCodeGenerator
      * @param string $jsTrackingCode JS tracking code as returned from the generate() function.
      * @return string
      */
-    public static function stripTags($jsTrackingCode)
+    public static function stripTags($jsTrackingCode): string
     {
         // Strip off open and close <script> tag and comments so that JS will be displayed in ALL mail clients
         return trim(strip_tags(html_entity_decode($jsTrackingCode)));
