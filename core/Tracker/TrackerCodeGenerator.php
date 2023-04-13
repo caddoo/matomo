@@ -267,6 +267,7 @@ class TrackerCodeGenerator
         } catch (\Exception $e) {
             return '';
         }
+
         // We need to parse_url to isolate hosts
         $websiteHosts = array();
         $firstHost = null;
@@ -296,13 +297,18 @@ class TrackerCodeGenerator
         }
         $options = '';
         if ($mergeSubdomains && !empty($firstHost)) {
-            $options .= '  _paq.push(["setCookieDomain", "*.' . $firstHost . '"]);' . "\n";
+            $options .= '  _paq.push(["setCookieDomain", "*.' . $this->removeWwwSubdomainIfPresent($firstHost) . '"]);' . "\n";
         }
         if ($mergeAliasUrls && !empty($websiteHosts)) {
             $urls = '["*.' . implode('","*.', $websiteHosts) . '"]';
             $options .= '  _paq.push(["setDomains", ' . $urls . ']);' . "\n";
         }
         return $options;
+    }
+
+    private function removeWwwSubdomainIfPresent(string $urlHost): string
+    {
+        return ltrim($urlHost, 'www.');
     }
 
     /**
