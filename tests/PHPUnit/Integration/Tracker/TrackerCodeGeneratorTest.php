@@ -10,6 +10,7 @@ namespace Piwik\Tests\Integration\Tracker;
 
 use Piwik\Config;
 use Piwik\Piwik;
+use Piwik\Plugins\SitesManager\API;
 use Piwik\Tests\Framework\Mock\Plugin\Manager;
 use Piwik\Tests\Framework\TestCase\IntegrationTestCase;
 use Piwik\Tracker\TrackerCodeGenerator;
@@ -29,7 +30,7 @@ class TrackerCodeGeneratorTest extends IntegrationTestCase
             'http://another-domain/piwik',
             'https://another-domain/piwik'
         );
-        $idSite = \Piwik\Plugins\SitesManager\API::getInstance()->addSite('Site name here <-->', $urls);
+        $idSite = API::getInstance()->addSite('Site name here <-->', $urls);
         $jsTag = $generator->generate($idSite, 'http://piwik-server/piwik',
             $mergeSubdomains = true, $groupPageTitlesByDomain = true, $mergeAliasUrls = true,
             $visitorCustomVariables = array(array("name", "value"), array("name 2", "value 2")),
@@ -306,6 +307,28 @@ class TrackerCodeGeneratorTest extends IntegrationTestCase
 ';
 
         $this->assertEquals($expected, $jsTag);
+    }
+
+    public function test_generate_outputsCookieDomainWithoutWwwIfPresent(): void
+    {
+        $generator = new TrackerCodeGenerator();
+
+        $idSite = API::getInstance()->addSite('Unit Test', ['http://www.nothing.com']);
+
+        $jsTag = $generator->generate($idSite, 'http://localhost/piwik', true);
+
+        $this->assertStringContainsString('["setCookieDomain", "*.nothing.com"]', $jsTag);
+    }
+
+    public function test_generate_outputsCookieDomainUntouchedIfWwwNotPresent(): void
+    {
+        $generator = new TrackerCodeGenerator();
+
+        $idSite = API::getInstance()->addSite('Unit Test', ['http://nothing.com']);
+
+        $jsTag = $generator->generate($idSite, 'http://localhost/piwik', true);
+
+        $this->assertStringContainsString('["setCookieDomain", "*.nothing.com"]', $jsTag);
     }
 
     private function hasCustomVariables()
