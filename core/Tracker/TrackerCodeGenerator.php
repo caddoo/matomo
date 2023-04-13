@@ -68,8 +68,6 @@ class TrackerCodeGenerator
         $excludedQueryParams = false,
         $excludedReferrers = []
     ) {
-        // changes made to this code should be mirrored in plugins/CoreAdminHome/javascripts/jsTrackingGenerator.js var generateJsCode
-
         if (substr($piwikUrl, 0, 4) !== 'http') {
             $piwikUrl = 'http://' . $piwikUrl;
         }
