@@ -18,10 +18,6 @@ on:
         description: 'Name of the UI test suite to run (TestSuiteName)'
         required: true
         type: string
-      is_preview:
-        type: boolean
-        required: false
-        default: false
       ref:
         type: string
         required: false
