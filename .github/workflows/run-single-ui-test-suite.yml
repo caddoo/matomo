@@ -8,25 +8,9 @@ on:
         required: true
         type: string
       ref:
-        type: string
-        required: false
-        default: ''
-
-  workflow_call:
-    inputs:
-      test_suite_name:
-        description: 'Name of the UI test suite to run (TestSuiteName)'
+        description: 'Branch name (e.g. 5.x-dev)'
         required: true
         type: string
-      ref:
-        type: string
-        required: false
-        default: ''
-    secrets:
-      ARTIFACTS_PASS:
-        required: false
-      TESTOMATIO_INTEGRATION:
-        required: false
 
 permissions:
   actions: read
